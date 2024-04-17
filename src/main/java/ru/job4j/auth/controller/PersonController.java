@@ -37,21 +37,11 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        if (persons.findById(person.getId()).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        persons.save(person);
-        return ResponseEntity.ok().build();
+        return persons.update(person) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        if (persons.findById(id).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        Person person = new Person();
-        person.setId(id);
-        persons.delete(person);
-        return ResponseEntity.ok().build();
+        return persons.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }
