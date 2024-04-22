@@ -44,4 +44,11 @@ public class PersonController {
     public ResponseEntity<Void> delete(@PathVariable int id) {
         return persons.delete(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<Person> signUp(@RequestBody Person person) {
+        return persons.signUp(person)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.CONFLICT).build());
+    }
 }

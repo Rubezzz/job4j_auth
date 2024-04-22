@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.job4j.auth.domain.Person;
 import ru.job4j.auth.repository.PersonRepository;
@@ -18,6 +19,8 @@ public class PersonService {
 
     @NonNull
     private final PersonRepository repository;
+    @NonNull
+    private BCryptPasswordEncoder encoder;
     private final Logger logger = LoggerFactory.getLogger(PersonService.class);
 
     public List<Person> findAll() {
@@ -54,5 +57,10 @@ public class PersonService {
         person.setId(id);
         repository.delete(person);
         return true;
+    }
+
+    public Optional<Person> signUp(Person person) {
+        person.setPassword(encoder.encode(person.getPassword()));
+        return save(person);
     }
 }
