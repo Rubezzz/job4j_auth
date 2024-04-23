@@ -33,6 +33,7 @@ public class PersonService {
 
     public Optional<Person> save(Person person) {
         try {
+            person.setPassword(encoder.encode(person.getPassword()));
             repository.save(person);
             return Optional.of(person);
         } catch (DataIntegrityViolationException e) {
@@ -57,10 +58,5 @@ public class PersonService {
         person.setId(id);
         repository.delete(person);
         return true;
-    }
-
-    public Optional<Person> signUp(Person person) {
-        person.setPassword(encoder.encode(person.getPassword()));
-        return save(person);
     }
 }
