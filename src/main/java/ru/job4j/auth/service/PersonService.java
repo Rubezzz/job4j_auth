@@ -8,6 +8,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.job4j.auth.domain.Person;
+import ru.job4j.auth.dto.PersonPasswordDto;
+import ru.job4j.auth.mapper.PersonMapper;
 import ru.job4j.auth.repository.PersonRepository;
 
 import java.util.List;
@@ -21,6 +23,8 @@ public class PersonService {
     private final PersonRepository repository;
     @NonNull
     private BCryptPasswordEncoder encoder;
+    @NonNull
+    private PersonMapper personMapper;
     private final Logger logger = LoggerFactory.getLogger(PersonService.class);
 
     public List<Person> findAll() {
@@ -57,6 +61,18 @@ public class PersonService {
         Person person = new Person();
         person.setId(id);
         repository.delete(person);
+        return true;
+    }
+
+    public boolean updatePassword(PersonPasswordDto personDto) {
+        Optional<Person> personOptional = repository.findById(personDto.getId());
+        if (personOptional.isEmpty()) {
+            return false;
+        }
+        Person person = personMapper.getEntityFromDto(personDto);
+        person.setLogin(personOptional.get().getLogin());
+        person.setPassword(encoder.encode(person.getPassword()));
+        repository.save(person);
         return true;
     }
 }

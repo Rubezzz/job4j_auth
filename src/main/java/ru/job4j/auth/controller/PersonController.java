@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.auth.domain.Person;
+import ru.job4j.auth.dto.PersonPasswordDto;
 import ru.job4j.auth.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,6 +67,11 @@ public class PersonController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person is not deleted. Please, check ID.");
         }
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/updatePass")
+    public ResponseEntity<Person> updatePassword(@RequestBody PersonPasswordDto passwordDto) {
+        return persons.updatePassword(passwordDto) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
